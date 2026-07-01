@@ -1,3 +1,6 @@
+import { Estado } from "../enums/Estado";
+import { RolUser } from "../enums/RolUser";
+
 export interface Usuario{
     id_usuario : number,
     nombre : string,
@@ -7,6 +10,6 @@ export interface Usuario{
     paswword : string,
     telefono : number,
     fecha_registro : Date,
-    rol : string,
-    estado : string
+    rol : RolUser,
+    estado : Estado
 }
