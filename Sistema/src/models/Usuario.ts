@@ -7,7 +7,7 @@ export interface Usuario{
     apellido : string,
     username : string,
     correo : string,
-    paswword : string,
+    password : string,
     telefono : number,
     fecha_registro : Date,
     rol : RolUser,
