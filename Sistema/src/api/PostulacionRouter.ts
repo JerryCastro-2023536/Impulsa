@@ -12,13 +12,13 @@ export async function PostulacionRouter(req: IncomingMessage, res: ServerRespons
 
     if (segmentos.length === 1 && segmentos[0] === "postulaciones") {
         if (req.method === "GET") {
-            return sendJson(res, 200, ps.mostrarPostulaciones()), true;
+            return sendJson(res, 200, await ps.mostrarPostulaciones()), true;
         }
         if (req.method === "POST") {
             try {
                 const body = await ReadBody(req);
                 const postulacion = JSON.parse(body);
-                const resultado = ps.agregarPostulacion(postulacion);
+                const resultado = await ps.agregarPostulacion(postulacion);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
                 return sendJson(res, 400, { error: error instanceof Error ? error.message : "JSON inválido o campos incompletos." }), true;
@@ -30,7 +30,7 @@ export async function PostulacionRouter(req: IncomingMessage, res: ServerRespons
     if (segmentos.length === 2 && segmentos[0] === "postulaciones") {
         const id = Number(segmentos[1]);
         if (req.method === "GET") {
-            const postulacion = ps.buscarPostulacionPorId(id);
+            const postulacion = await ps.buscarPostulacionPorId(id);
             return sendJson(res, 200, postulacion), true;
         }
         if (req.method === "PUT") {

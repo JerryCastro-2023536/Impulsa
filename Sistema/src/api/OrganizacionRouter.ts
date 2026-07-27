@@ -12,13 +12,13 @@ export async function OrganizacionRouter(req: IncomingMessage, res: ServerRespon
 
     if (segmentos.length === 1 && segmentos[0] === "organizaciones") {
         if (req.method === "GET") {
-            return sendJson(res, 200, os.mostrarOrganizaciones()), true;
+            return sendJson(res, 200, await os.mostrarOrganizaciones()), true;
         }
         if (req.method === "POST") {
             try {
                 const body = await ReadBody(req);
                 const organizacion = JSON.parse(body);
-                const resultado = os.agregarOrganizacion(organizacion);
+                const resultado = await os.agregarOrganizacion(organizacion);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
                 return sendJson(res, 400, { error: error instanceof Error ? error.message : "JSON inválido o campos incompletos." }), true;
@@ -30,7 +30,7 @@ export async function OrganizacionRouter(req: IncomingMessage, res: ServerRespon
     if (segmentos.length === 2 && segmentos[0] === "organizaciones") {
         const id = Number(segmentos[1]);
         if (req.method === "GET") {
-            const organizacion = os.buscarOrganizacionPorId(id);
+            const organizacion = await os.buscarOrganizacionPorId(id);
             return sendJson(res, 200, organizacion), true;
         }
         if (req.method === "PUT") {

@@ -12,13 +12,13 @@ export async function DocumentoRouter(req: IncomingMessage, res: ServerResponse)
 
     if (segmentos.length === 1 && segmentos[0] === "documentos") {
         if (req.method === "GET") {
-            return sendJson(res, 200, ds.mostrarDocumentos()), true;
+            return sendJson(res, 200, await ds.mostrarDocumentos()), true;
         }
         if (req.method === "POST") {
             try {
                 const body = await ReadBody(req);
                 const documento = JSON.parse(body);
-                const resultado = ds.agregarDocumento(documento);
+                const resultado = await ds.agregarDocumento(documento);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
                 return sendJson(res, 400, { error: error instanceof Error ? error.message : "JSON inválido o campos incompletos." }), true;
@@ -30,7 +30,7 @@ export async function DocumentoRouter(req: IncomingMessage, res: ServerResponse)
     if (segmentos.length === 2 && segmentos[0] === "documentos") {
         const id = Number(segmentos[1]);
         if (req.method === "GET") {
-            const documento = ds.buscarDocumentoPorId(id);
+            const documento = await ds.buscarDocumentoPorId(id);
             return sendJson(res, 200, documento), true;
         }
         if (req.method === "PUT") {

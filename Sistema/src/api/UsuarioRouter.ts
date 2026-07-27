@@ -12,14 +12,15 @@ export async function UsuarioRouter(req : IncomingMessage, res : ServerResponse)
 
     if(segmentos.length === 1 && segmentos[0] === "usuarios"){
         if(req.method === "GET"){
-            return sendJson(res, 200, us.mostrarUsuarios()) , true;
+            const usuarios = await us.mostrarUsuarios();
+            return sendJson(res, 200, usuarios), true;
         }
 
         if(req.method === "POST"){
             try{
                 const body = await ReadBody(req);
                 const user = JSON.parse(body);
-                const resultado = us.crearUsuario(user);
+                const resultado = await us.crearUsuario(user);
                 return sendJson(res, 201, resultado), true;
             }catch(error){
                 return sendJson(res, 400, { error: error instanceof Error ? error.message : "JSON inválido o campos incompletos." }), true;
@@ -30,11 +31,11 @@ export async function UsuarioRouter(req : IncomingMessage, res : ServerResponse)
     }
 
     if(segmentos.length === 2 && segmentos[0] === "usuarios"){
-        const id = Number(segmentos[2]);
+        const id = Number(segmentos[1]);
 
         if(req.method === "GET"){
             const user = await us.buscarUsuarioPorId(id);
-            return sendJson(res, 200, user), true;
+            return sendJson(res, user ? 200 : 404, user ?? { error: "Usuario no encontrado." }), true;
         }
 
         if(req.method === "PUT"){

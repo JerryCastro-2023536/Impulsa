@@ -12,13 +12,13 @@ export async function PerfilRouter(req: IncomingMessage, res: ServerResponse): P
 
     if (segmentos.length === 1 && segmentos[0] === "perfiles") {
         if (req.method === "GET") {
-            return sendJson(res, 200, ps.mostrarPerfiles()), true;
+            return sendJson(res, 200, await ps.mostrarPerfiles()), true;
         }
         if (req.method === "POST") {
             try {
                 const body = await ReadBody(req);
                 const perfil = JSON.parse(body);
-                const resultado = ps.agregarPerfil(perfil);
+                const resultado = await ps.agregarPerfil(perfil);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
                 return sendJson(res, 400, { error: error instanceof Error ? error.message : "JSON inválido o campos incompletos." }), true;
@@ -30,7 +30,7 @@ export async function PerfilRouter(req: IncomingMessage, res: ServerResponse): P
     if (segmentos.length === 2 && segmentos[0] === "perfiles") {
         const id = Number(segmentos[1]);
         if (req.method === "GET") {
-            const perfil = ps.buscarPerfilPorId(id);
+            const perfil = await ps.buscarPerfilPorId(id);
             return sendJson(res, 200, perfil), true;
         }
         if (req.method === "PUT") {

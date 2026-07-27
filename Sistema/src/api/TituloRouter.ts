@@ -27,7 +27,7 @@ export async function TituloRouter(req : IncomingMessage, res : ServerResponse) 
     }
     
     if(segmentos.length === 2 && segmentos[0] === "titulos"){
-        const id = Number(segmentos[2]);
+        const id = Number(segmentos[1]);
         if(req.method === "GET"){
             const titulo = await ms.buscarTituloPorId(id);
             return sendJson(res, 200, titulo), true;

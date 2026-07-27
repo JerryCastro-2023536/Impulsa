@@ -12,13 +12,13 @@ export async function ExperienciaRouter(req: IncomingMessage, res: ServerRespons
 
     if (segmentos.length === 1 && segmentos[0] === "experiencias") {
         if (req.method === "GET") {
-            return sendJson(res, 200, es.mostrarExperiencias()), true;
+            return sendJson(res, 200, await es.mostrarExperiencias()), true;
         }
         if (req.method === "POST") {
             try {
                 const body = await ReadBody(req);
                 const experiencia = JSON.parse(body);
-                const resultado = es.agregarExperiencia(experiencia);
+                const resultado = await es.agregarExperiencia(experiencia);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
                 return sendJson(res, 400, { error: error instanceof Error ? error.message : "JSON inválido o campos incompletos." }), true;
@@ -30,7 +30,7 @@ export async function ExperienciaRouter(req: IncomingMessage, res: ServerRespons
     if (segmentos.length === 2 && segmentos[0] === "experiencias") {
         const id = Number(segmentos[1]);
         if (req.method === "GET") {
-            const experiencia = es.buscarExperienciaPorId(id);
+            const experiencia = await es.buscarExperienciaPorId(id);
             return sendJson(res, 200, experiencia), true;
         }
         if (req.method === "PUT") {
