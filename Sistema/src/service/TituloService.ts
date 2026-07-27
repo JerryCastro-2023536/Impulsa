@@ -1,39 +1,36 @@
 import { Titulo } from "../models/Titulo";
-
-let titulos : Titulo [] = [];
+import { TituloRepository } from "../repository/TituloRepository";
 
 export class TituloService{
-    
+    tr = new TituloRepository();
 
-    mostrarTitulos() : Titulo[]{
-        return titulos;
+    async mostrarTitulos(): Promise<Titulo[]> {
+        return await this.tr.selectTitulo();
     }
 
-    agregarTitulo(titulo : Titulo) : Titulo{
-        titulos.push(titulo);
-        return titulo;
+    async crearTitulo(titulo: Titulo): Promise<Titulo> {
+        return await this.tr.insertTitulo(titulo);
     }
 
-    buscarTituloPorId(id : number) : Titulo | undefined{
-        return titulos.find(u => u.id_titulo === id);
+    async buscarTituloPorId(id: number): Promise<Titulo | undefined> {
+        return await this.tr.selectTituloPorId(id);
     }
 
-    actualizarTitulo(id : number, titulo : Titulo) : Titulo | null{
-        const dato = titulos.find(u => u.id_titulo === id);
-        if(!dato){
-            return null;
+    async actualizarTitulo(id: number, titulo: Titulo): Promise<Titulo> {
+        return await this.tr.updateTitulo(id, titulo);
+    }
+
+    async eliminarTitulo(id: number): Promise<boolean> {
+        const existe = await this.tr.selectTituloPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, titulo);
-
-        return titulo;
-
-    }
-
-    eliminarTitulo(id : number) : boolean{
-        const indice = titulos.findIndex(u => u.id_titulo === id);
-        titulos.splice(indice, 1);
+        await this.tr.deleteTitulo(id);
         return true;
     }
 
+    async agregarTitulo(titulo: Titulo): Promise<Titulo> {
+        return await this.crearTitulo(titulo);
+    }
 
 }
