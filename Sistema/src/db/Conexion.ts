@@ -4,18 +4,19 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const PORT = Number(process.env.PORT_DATABASE);
+const PASSWORD = process.env.PASSWORD_DB;
 
-const pool = new Pool({
+export const pool = new Pool({
     user : "postgres",
     host : "localhost",
-    database : "ImpulsaDB",
-    password : "admin",
+    database : "dbimpulsa_in5cm",
+    password : PASSWORD,
     port : PORT
 });
 
 export async function testConexion() {
     try{
-        const res = await pool.query("SELECT NOW()");
+        const res = await pool.query("SELECT * FROM usuario");
         console.log("Conexion exitosa" + res.rows);
     }catch(error){
         console.log(error);
