@@ -1,38 +1,36 @@
 import { Postulacion } from "../models/Postulacion";
-
-let postulaciones: Postulacion[] = [];
+import { PostulacionRepository } from "../repository/PostulacionRepository";
 
 export class PostulacionService {
+    pr = new PostulacionRepository();
 
-    mostrarPostulaciones(): Postulacion[] {
-        return postulaciones;
+    async mostrarPostulaciones(): Promise<Postulacion[]> {
+        return await this.pr.selectPostulacion();
     }
 
-    agregarPostulacion(postulacion: Postulacion): Postulacion {
-        postulaciones.push(postulacion);
-        return postulacion;
+    async crearPostulacion(postulacion: Postulacion): Promise<Postulacion> {
+        return await this.pr.insertPostulacion(postulacion);
     }
 
-    buscarPostulacionPorId(id: number): Postulacion | undefined {
-        return postulaciones.find(p => p.id_postulacion === id);
+    async buscarPostulacionPorId(id: number): Promise<Postulacion | undefined> {
+        return await this.pr.selectPostulacionPorId(id);
     }
 
-    actualizarPostulacion(id: number, postulacion: Postulacion): Postulacion | null {
-        const dato = postulaciones.find(p => p.id_postulacion === id);
-        if (!dato) {
-            return null;
+    async actualizarPostulacion(id: number, postulacion: Postulacion): Promise<Postulacion> {
+        return await this.pr.updatePostulacion(id, postulacion);
+    }
+
+    async eliminarPostulacion(id: number): Promise<boolean> {
+        const existe = await this.pr.selectPostulacionPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, postulacion);
-        return dato;
+        await this.pr.deletePostulacion(id);
+        return true;
     }
 
-    eliminarPostulacion(id: number): boolean {
-        const indice = postulaciones.findIndex(p => p.id_postulacion === id);
-        if (indice !== -1) {
-            postulaciones.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarPostulacion(postulacion: Postulacion): Promise<Postulacion> {
+        return await this.crearPostulacion(postulacion);
     }
 
 }

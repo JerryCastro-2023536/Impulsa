@@ -1,38 +1,36 @@
 import { Feedback } from "../models/Feedback";
-
-let feedbacks: Feedback[] = [];
+import { FeedbackRepository } from "../repository/FeedbackRepository";
 
 export class FeedbackService {
+    fr = new FeedbackRepository();
 
-    mostrarFeedbacks(): Feedback[] {
-        return feedbacks;
+    async mostrarFeedbacks(): Promise<Feedback[]> {
+        return await this.fr.selectFeedback();
     }
 
-    agregarFeedback(feedback: Feedback): Feedback {
-        feedbacks.push(feedback);
-        return feedback;
+    async crearFeedback(feedback: Feedback): Promise<Feedback> {
+        return await this.fr.insertFeedback(feedback);
     }
 
-    buscarFeedbackPorId(id: number): Feedback | undefined {
-        return feedbacks.find(fb => fb.id_feedback === id);
+    async buscarFeedbackPorId(id: number): Promise<Feedback | undefined> {
+        return await this.fr.selectFeedbackPorId(id);
     }
 
-    actualizarFeedback(id: number, feedback: Feedback): Feedback | null {
-        const dato = feedbacks.find(fb => fb.id_feedback === id);
-        if (!dato) {
-            return null;
+    async actualizarFeedback(id: number, feedback: Feedback): Promise<Feedback> {
+        return await this.fr.updateFeedback(id, feedback);
+    }
+
+    async eliminarFeedback(id: number): Promise<boolean> {
+        const existe = await this.fr.selectFeedbackPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, feedback);
-        return dato;
+        await this.fr.deleteFeedback(id);
+        return true;
     }
 
-    eliminarFeedback(id: number): boolean {
-        const indice = feedbacks.findIndex(fb => fb.id_feedback === id);
-        if (indice !== -1) {
-            feedbacks.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarFeedback(feedback: Feedback): Promise<Feedback> {
+        return await this.crearFeedback(feedback);
     }
 
 }

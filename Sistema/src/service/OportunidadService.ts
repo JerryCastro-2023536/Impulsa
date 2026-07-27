@@ -1,38 +1,36 @@
 import { Oportunidad } from "../models/Oportunidad";
-
-let oportunidades: Oportunidad[] = [];
+import { OportunidadRepository } from "../repository/OportunidadRepository";
 
 export class OportunidadService {
+    or = new OportunidadRepository();
 
-    mostrarOportunidades(): Oportunidad[] {
-        return oportunidades;
+    async mostrarOportunidades(): Promise<Oportunidad[]> {
+        return await this.or.selectOportunidad();
     }
 
-    agregarOportunidad(oportunidad: Oportunidad): Oportunidad {
-        oportunidades.push(oportunidad);
-        return oportunidad;
+    async crearOportunidad(oportunidad: Oportunidad): Promise<Oportunidad> {
+        return await this.or.insertOportunidad(oportunidad);
     }
 
-    buscarOportunidadPorId(id: number): Oportunidad | undefined {
-        return oportunidades.find(o => o.id_oportunidad === id);
+    async buscarOportunidadPorId(id: number): Promise<Oportunidad | undefined> {
+        return await this.or.selectOportunidadPorId(id);
     }
 
-    actualizarOportunidad(id: number, oportunidad: Oportunidad): Oportunidad | null {
-        const dato = oportunidades.find(o => o.id_oportunidad === id);
-        if (!dato) {
-            return null;
+    async actualizarOportunidad(id: number, oportunidad: Oportunidad): Promise<Oportunidad> {
+        return await this.or.updateOportunidad(id, oportunidad);
+    }
+
+    async eliminarOportunidad(id: number): Promise<boolean> {
+        const existe = await this.or.selectOportunidadPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, oportunidad);
-        return dato;
+        await this.or.deleteOportunidad(id);
+        return true;
     }
 
-    eliminarOportunidad(id: number): boolean {
-        const indice = oportunidades.findIndex(o => o.id_oportunidad === id);
-        if (indice !== -1) {
-            oportunidades.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarOportunidad(oportunidad: Oportunidad): Promise<Oportunidad> {
+        return await this.crearOportunidad(oportunidad);
     }
 
 }

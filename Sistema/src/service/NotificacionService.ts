@@ -1,38 +1,36 @@
 import { Notificacion } from "../models/Notificacion";
-
-let notificaciones: Notificacion[] = [];
+import { NotificacionRepository } from "../repository/NotificacionRepository";
 
 export class NotificacionService {
+    nr = new NotificacionRepository();
 
-    mostrarNotificaciones(): Notificacion[] {
-        return notificaciones;
+    async mostrarNotificaciones(): Promise<Notificacion[]> {
+        return await this.nr.selectNotificacion();
     }
 
-    agregarNotificacion(notificacion: Notificacion): Notificacion {
-        notificaciones.push(notificacion);
-        return notificacion;
+    async crearNotificacion(notificacion: Notificacion): Promise<Notificacion> {
+        return await this.nr.insertNotificacion(notificacion);
     }
 
-    buscarNotificacionPorId(id: number): Notificacion | undefined {
-        return notificaciones.find(n => n.id_notificacion === id);
+    async buscarNotificacionPorId(id: number): Promise<Notificacion | undefined> {
+        return await this.nr.selectNotificacionPorId(id);
     }
 
-    actualizarNotificacion(id: number, notificacion: Notificacion): Notificacion | null {
-        const dato = notificaciones.find(n => n.id_notificacion === id);
-        if (!dato) {
-            return null;
+    async actualizarNotificacion(id: number, notificacion: Notificacion): Promise<Notificacion> {
+        return await this.nr.updateNotificacion(id, notificacion);
+    }
+
+    async eliminarNotificacion(id: number): Promise<boolean> {
+        const existe = await this.nr.selectNotificacionPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, notificacion);
-        return dato;
+        await this.nr.deleteNotificacion(id);
+        return true;
     }
 
-    eliminarNotificacion(id: number): boolean {
-        const indice = notificaciones.findIndex(n => n.id_notificacion === id);
-        if (indice !== -1) {
-            notificaciones.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarNotificacion(notificacion: Notificacion): Promise<Notificacion> {
+        return await this.crearNotificacion(notificacion);
     }
 
 }

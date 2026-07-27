@@ -1,38 +1,36 @@
 import { Perfil } from "../models/Perfil";
-
-let perfiles: Perfil[] = [];
+import { PerfilRepository } from "../repository/PerfilRepository";
 
 export class PerfilService {
+    pr = new PerfilRepository();
 
-    mostrarPerfiles(): Perfil[] {
-        return perfiles;
+    async mostrarPerfiles(): Promise<Perfil[]> {
+        return await this.pr.selectPerfil();
     }
 
-    agregarPerfil(perfil: Perfil): Perfil {
-        perfiles.push(perfil);
-        return perfil;
+    async crearPerfil(perfil: Perfil): Promise<Perfil> {
+        return await this.pr.insertPerfil(perfil);
     }
 
-    buscarPerfilPorId(id: number): Perfil | undefined {
-        return perfiles.find(p => p.id_perfil === id);
+    async buscarPerfilPorId(id: number): Promise<Perfil | undefined> {
+        return await this.pr.selectPerfilPorId(id);
     }
 
-    actualizarPerfil(id: number, perfil: Perfil): Perfil | null {
-        const dato = perfiles.find(p => p.id_perfil === id);
-        if (!dato) {
-            return null;
+    async actualizarPerfil(id: number, perfil: Perfil): Promise<Perfil> {
+        return await this.pr.updatePerfil(id, perfil);
+    }
+
+    async eliminarPerfil(id: number): Promise<boolean> {
+        const existe = await this.pr.selectPerfilPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, perfil);
-        return dato;
+        await this.pr.deletePerfil(id);
+        return true;
     }
 
-    eliminarPerfil(id: number): boolean {
-        const indice = perfiles.findIndex(p => p.id_perfil === id);
-        if (indice !== -1) {
-            perfiles.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarPerfil(perfil: Perfil): Promise<Perfil> {
+        return await this.crearPerfil(perfil);
     }
 
 }

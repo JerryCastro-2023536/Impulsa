@@ -1,38 +1,36 @@
 import { Experiencia } from "../models/Experiencia";
-
-let experiencias: Experiencia[] = [];
+import { ExperienciaRepository } from "../repository/ExperienciaRepository";
 
 export class ExperienciaService {
+    er = new ExperienciaRepository();
 
-    mostrarExperiencias(): Experiencia[] {
-        return experiencias;
+    async mostrarExperiencias(): Promise<Experiencia[]> {
+        return await this.er.selectExperiencia();
     }
 
-    agregarExperiencia(experiencia: Experiencia): Experiencia {
-        experiencias.push(experiencia);
-        return experiencia;
+    async crearExperiencia(experiencia: Experiencia): Promise<Experiencia> {
+        return await this.er.insertExperiencia(experiencia);
     }
 
-    buscarExperienciaPorId(id: number): Experiencia | undefined {
-        return experiencias.find(e => e.id_experiencia === id);
+    async buscarExperienciaPorId(id: number): Promise<Experiencia | undefined> {
+        return await this.er.selectExperienciaPorId(id);
     }
 
-    actualizarExperiencia(id: number, experiencia: Experiencia): Experiencia | null {
-        const dato = experiencias.find(e => e.id_experiencia === id);
-        if (!dato) {
-            return null;
+    async actualizarExperiencia(id: number, experiencia: Experiencia): Promise<Experiencia> {
+        return await this.er.updateExperiencia(id, experiencia);
+    }
+
+    async eliminarExperiencia(id: number): Promise<boolean> {
+        const existe = await this.er.selectExperienciaPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, experiencia);
-        return dato;
+        await this.er.deleteExperiencia(id);
+        return true;
     }
 
-    eliminarExperiencia(id: number): boolean {
-        const indice = experiencias.findIndex(e => e.id_experiencia === id);
-        if (indice !== -1) {
-            experiencias.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarExperiencia(experiencia: Experiencia): Promise<Experiencia> {
+        return await this.crearExperiencia(experiencia);
     }
 
 }

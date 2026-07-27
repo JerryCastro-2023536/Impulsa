@@ -1,37 +1,36 @@
 import { Documento } from "../models/Documento";
-
-let documentos : Documento[] = [];
+import { DocumentoRepository } from "../repository/DocumentoRepository";
 
 export class DocumentoService{
+    dr = new DocumentoRepository();
 
-    mostrarDocumentos() : Documento[]{
-        return documentos;
+    async mostrarDocumentos(): Promise<Documento[]> {
+        return await this.dr.selectDocumento();
     }
 
-    agregarDocumento(documento : Documento) : Documento{
-        documentos.push(documento);
-        return documento;
+    async crearDocumento(documento: Documento): Promise<Documento> {
+        return await this.dr.insertDocumento(documento);
     }
 
-    buscarDocumentoPorId(id : number) : Documento | undefined{
-        return documentos.find(d => d.id_documento === id);
+    async buscarDocumentoPorId(id: number): Promise<Documento | undefined> {
+        return await this.dr.selectDocumentoPorId(id);
     }
 
-    actualizarDocumento(id : number, documento : Documento) : Documento | null{
-        const dato = documentos.find(d => d.id_documento === id);
-        if(!dato){
-            return null
+    async actualizarDocumento(id: number, documento: Documento): Promise<Documento> {
+        return await this.dr.updateDocumento(id, documento);
+    }
+
+    async eliminarDocumento(id: number): Promise<boolean> {
+        const existe = await this.dr.selectDocumentoPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, documento);
-        
-        return documento;
-
+        await this.dr.deleteDocumento(id);
+        return true;
     }
 
-    eliminarDocumento(id : number) : boolean{
-        const indice = documentos.findIndex(d => d.id_documento === id);
-        documentos.splice(indice, 1);
-        return false;
-    } 
-
+    async agregarDocumento(documento: Documento): Promise<Documento> {
+        return await this.crearDocumento(documento);
+    }
 }
+

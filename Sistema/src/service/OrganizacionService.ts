@@ -1,38 +1,36 @@
 import { Organizacion } from "../models/Organizacion";
-
-let organizaciones: Organizacion[] = [];
+import { OrganizacionRepository } from "../repository/OrganizacionRepository";
 
 export class OrganizacionService {
+    or = new OrganizacionRepository();
 
-    mostrarOrganizaciones(): Organizacion[] {
-        return organizaciones;
+    async mostrarOrganizaciones(): Promise<Organizacion[]> {
+        return await this.or.selectOrganizacion();
     }
 
-    agregarOrganizacion(organizacion: Organizacion): Organizacion {
-        organizaciones.push(organizacion);
-        return organizacion;
+    async crearOrganizacion(organizacion: Organizacion): Promise<Organizacion> {
+        return await this.or.insertOrganizacion(organizacion);
     }
 
-    buscarOrganizacionPorId(id: number): Organizacion | undefined {
-        return organizaciones.find(o => o.id_organizacion === id);
+    async buscarOrganizacionPorId(id: number): Promise<Organizacion | undefined> {
+        return await this.or.selectOrganizacionPorId(id);
     }
 
-    actualizarOrganizacion(id: number, organizacion: Organizacion): Organizacion | null {
-        const dato = organizaciones.find(o => o.id_organizacion === id);
-        if (!dato) {
-            return null;
+    async actualizarOrganizacion(id: number, organizacion: Organizacion): Promise<Organizacion> {
+        return await this.or.updateOrganizacion(id, organizacion);
+    }
+
+    async eliminarOrganizacion(id: number): Promise<boolean> {
+        const existe = await this.or.selectOrganizacionPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, organizacion);
-        return dato;
+        await this.or.deleteOrganizacion(id);
+        return true;
     }
 
-    eliminarOrganizacion(id: number): boolean {
-        const indice = organizaciones.findIndex(o => o.id_organizacion === id);
-        if (indice !== -1) {
-            organizaciones.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarOrganizacion(organizacion: Organizacion): Promise<Organizacion> {
+        return await this.crearOrganizacion(organizacion);
     }
 
 }

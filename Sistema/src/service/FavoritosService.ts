@@ -1,38 +1,36 @@
 import { Favoritos } from "../models/Favoritos";
-
-let favoritos: Favoritos[] = [];
+import { FavoritosRepository } from "../repository/FavoritosRepository";
 
 export class FavoritosService {
+    fr = new FavoritosRepository();
 
-    mostrarFavoritos(): Favoritos[] {
-        return favoritos;
+    async mostrarFavoritos(): Promise<Favoritos[]> {
+        return await this.fr.selectFavoritos();
     }
 
-    agregarFavorito(favorito: Favoritos): Favoritos {
-        favoritos.push(favorito);
-        return favorito;
+    async crearFavorito(favorito: Favoritos): Promise<Favoritos> {
+        return await this.fr.insertFavorito(favorito);
     }
 
-    buscarFavoritoPorId(id: number): Favoritos | undefined {
-        return favoritos.find(f => f.id_favorito === id);
+    async buscarFavoritoPorId(id: number): Promise<Favoritos | undefined> {
+        return await this.fr.selectFavoritoPorId(id);
     }
 
-    actualizarFavorito(id: number, favorito: Favoritos): Favoritos | null {
-        const dato = favoritos.find(f => f.id_favorito === id);
-        if (!dato) {
-            return null;
+    async actualizarFavorito(id: number, favorito: Favoritos): Promise<Favoritos> {
+        return await this.fr.updateFavorito(id, favorito);
+    }
+
+    async eliminarFavorito(id: number): Promise<boolean> {
+        const existe = await this.fr.selectFavoritoPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, favorito);
-        return dato;
+        await this.fr.deleteFavorito(id);
+        return true;
     }
 
-    eliminarFavorito(id: number): boolean {
-        const indice = favoritos.findIndex(f => f.id_favorito === id);
-        if (indice !== -1) {
-            favoritos.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarFavorito(favorito: Favoritos): Promise<Favoritos> {
+        return await this.crearFavorito(favorito);
     }
 
 }

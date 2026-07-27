@@ -1,38 +1,36 @@
 import { Habilidad } from "../models/Habilidad";
-
-let habilidades: Habilidad[] = [];
+import { HabilidadRepository } from "../repository/HabilidadRepository";
 
 export class HabilidadService {
+    hr = new HabilidadRepository();
 
-    mostrarHabilidades(): Habilidad[] {
-        return habilidades;
+    async mostrarHabilidades(): Promise<Habilidad[]> {
+        return await this.hr.selectHabilidad();
     }
 
-    agregarHabilidad(habilidad: Habilidad): Habilidad {
-        habilidades.push(habilidad);
-        return habilidad;
+    async crearHabilidad(habilidad: Habilidad): Promise<Habilidad> {
+        return await this.hr.insertHabilidad(habilidad);
     }
 
-    buscarHabilidadPorId(id: number): Habilidad | undefined {
-        return habilidades.find(h => h.id_habilidad === id);
+    async buscarHabilidadPorId(id: number): Promise<Habilidad | undefined> {
+        return await this.hr.selectHabilidadPorId(id);
     }
 
-    actualizarHabilidad(id: number, habilidad: Habilidad): Habilidad | null {
-        const dato = habilidades.find(h => h.id_habilidad === id);
-        if (!dato) {
-            return null;
+    async actualizarHabilidad(id: number, habilidad: Habilidad): Promise<Habilidad> {
+        return await this.hr.updateHabilidad(id, habilidad);
+    }
+
+    async eliminarHabilidad(id: number): Promise<boolean> {
+        const existe = await this.hr.selectHabilidadPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, habilidad);
-        return dato;
+        await this.hr.deleteHabilidad(id);
+        return true;
     }
 
-    eliminarHabilidad(id: number): boolean {
-        const indice = habilidades.findIndex(h => h.id_habilidad === id);
-        if (indice !== -1) {
-            habilidades.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarHabilidad(habilidad: Habilidad): Promise<Habilidad> {
+        return await this.crearHabilidad(habilidad);
     }
 
 }

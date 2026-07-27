@@ -1,38 +1,34 @@
 import { Usuario } from "../models/Usuario";
-
-
+import { UsuarioRepository } from "../repository/UsuarioRepository";
 
 export class UsuarioService{
-    usuarios : Usuario [] = [];
+    ur = new UsuarioRepository();
 
-    mostrarUsuarios() : Usuario[]{
-        return this.usuarios;
+    async mostrarUsuarios(){
+        return await this.ur.selectUsuario();
     }
 
-    crearUsuario(usuario : Usuario) : Usuario{
-        this.usuarios.push(usuario);
-        return usuario
+    async crearUsuario(usuario : Usuario){
+        return await this.ur.insertUsuario(usuario);
     }
 
-    buscarUsuarioPorId(id : number) : Usuario | undefined{
-        return this.usuarios.find(u => u.id_usuario === id);
+    async buscarUsuarioPorId(id : number) : Promise<Usuario | undefined>{
+        return await this.ur.selectUsuarioPorId(id);
     }
 
-    actualizarUsuario(id : number, usuario : Usuario) : Usuario | null{
-        const user = this.usuarios.find(u => u.id_usuario === id);
+    async actualizarUsuario(id : number, usuario : Usuario){
+        return await this.ur.updateUsuario(id, usuario);
+    }
 
-        if(!user){
-            return null;
+    async eliminarUsuario(id : number){
+        const existe = await this.ur.selectUsuarioPorId(id);
+
+        if(!existe){
+            return false;
         }
 
-        Object.assign(user, usuario);
+        await this.ur.deleteUsuario(id);
 
-        return usuario;
-    }
-
-    eliminarUsuario(id : number) : boolean{
-        const indice = this.usuarios.findIndex(u => u.id_usuario === id);
-        this.usuarios.splice(indice, 1);
         return true;
     }
 

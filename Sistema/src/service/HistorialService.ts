@@ -1,38 +1,36 @@
 import { Historial } from "../models/Historial";
-
-let historiales: Historial[] = [];
+import { HistorialRepository } from "../repository/HistorialRepository";
 
 export class HistorialService {
+    hr = new HistorialRepository();
 
-    mostrarHistoriales(): Historial[] {
-        return historiales;
+    async mostrarHistoriales(): Promise<Historial[]> {
+        return await this.hr.selectHistorial();
     }
 
-    agregarHistorial(historial: Historial): Historial {
-        historiales.push(historial);
-        return historial;
+    async crearHistorial(historial: Historial): Promise<Historial> {
+        return await this.hr.insertHistorial(historial);
     }
 
-    buscarHistorialPorId(id: number): Historial | undefined {
-        return historiales.find(h => h.id_historial === id);
+    async buscarHistorialPorId(id: number): Promise<Historial | undefined> {
+        return await this.hr.selectHistorialPorId(id);
     }
 
-    actualizarHistorial(id: number, historial: Historial): Historial | null {
-        const dato = historiales.find(h => h.id_historial === id);
-        if (!dato) {
-            return null;
+    async actualizarHistorial(id: number, historial: Historial): Promise<Historial> {
+        return await this.hr.updateHistorial(id, historial);
+    }
+
+    async eliminarHistorial(id: number): Promise<boolean> {
+        const existe = await this.hr.selectHistorialPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, historial);
-        return dato;
+        await this.hr.deleteHistorial(id);
+        return true;
     }
 
-    eliminarHistorial(id: number): boolean {
-        const indice = historiales.findIndex(h => h.id_historial === id);
-        if (indice !== -1) {
-            historiales.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarHistorial(historial: Historial): Promise<Historial> {
+        return await this.crearHistorial(historial);
     }
 
 }

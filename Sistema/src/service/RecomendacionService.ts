@@ -1,46 +1,36 @@
 import { Recomendacion } from "../models/Recomendacion";
-
-let recomendaciones: Recomendacion[] = [];
+import { RecomendacionRepository } from "../repository/RecomendacionRepository";
 
 export class RecomendacionService {
+    rr = new RecomendacionRepository();
 
-    mostrarRecomendaciones(): Recomendacion[] {
-        return recomendaciones;
+    async mostrarRecomendaciones(): Promise<Recomendacion[]> {
+        return await this.rr.selectRecomendacion();
     }
 
-    agregarRecomendacion(recomendacion: Recomendacion): Recomendacion {
-        recomendaciones.push(recomendacion);
-        return recomendacion;
+    async crearRecomendacion(recomendacion: Recomendacion): Promise<Recomendacion> {
+        return await this.rr.insertRecomendacion(recomendacion);
     }
 
-    buscarRecomendacionPorId(idPerfil: number, idOportunidad: number): Recomendacion | undefined {
-        return recomendaciones.find(r => r.id_perfil === idPerfil && r.id_oportunidad === idOportunidad);
+    async buscarRecomendacionPorId(id: number): Promise<Recomendacion | undefined> {
+        return await this.rr.selectRecomendacionPorId(id);
     }
 
-    buscarRecomendacionPorPerfil(idPerfil: number): Recomendacion[] {
-        return recomendaciones.filter(r => r.id_perfil === idPerfil);
+    async actualizarRecomendacion(id: number, recomendacion: Recomendacion): Promise<Recomendacion> {
+        return await this.rr.updateRecomendacion(id, recomendacion);
     }
 
-    buscarRecomendacionPorOportunidad(idOportunidad: number): Recomendacion[] {
-        return recomendaciones.filter(r => r.id_oportunidad === idOportunidad);
-    }
-
-    actualizarRecomendacion(idPerfil: number, idOportunidad: number, recomendacion: Recomendacion): Recomendacion | null {
-        const dato = recomendaciones.find(r => r.id_perfil === idPerfil && r.id_oportunidad === idOportunidad);
-        if (!dato) {
-            return null;
+    async eliminarRecomendacion(id: number): Promise<boolean> {
+        const existe = await this.rr.selectRecomendacionPorId(id);
+        if (!existe) {
+            return false;
         }
-        Object.assign(dato, recomendacion);
-        return dato;
+        await this.rr.deleteRecomendacion(id);
+        return true;
     }
 
-    eliminarRecomendacion(idPerfil: number, idOportunidad: number): boolean {
-        const indice = recomendaciones.findIndex(r => r.id_perfil === idPerfil && r.id_oportunidad === idOportunidad);
-        if (indice !== -1) {
-            recomendaciones.splice(indice, 1);
-            return true;
-        }
-        return false;
+    async agregarRecomendacion(recomendacion: Recomendacion): Promise<Recomendacion> {
+        return await this.crearRecomendacion(recomendacion);
     }
 
 }
