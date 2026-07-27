@@ -4,5 +4,5 @@ export interface Documento{
     tipo_documento : string,
     archivo : Blob,
     fecha_registro : Date,
-    id_oportunidad : number
+    id_perfil : number
 }

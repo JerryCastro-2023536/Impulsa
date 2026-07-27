@@ -4,6 +4,6 @@ export interface Notificacion{
     mensaje : string,
     fecha_envio : Date,
     tipo : string,
-    id_usuario : number,
+    id_perfil : number,
     id_organizacion : number
 }

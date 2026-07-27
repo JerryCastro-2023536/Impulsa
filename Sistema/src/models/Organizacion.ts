@@ -13,5 +13,5 @@ export interface Organizacion{
     pais : string,
     estado : Estado,
     fecha_registro : Date,
-    id_usario : number
+    id_usuario : number
 }
