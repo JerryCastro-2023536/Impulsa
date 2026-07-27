@@ -7,8 +7,14 @@ import { PerfilRouter } from "./api/PerfilRouter";
 import { OrganizacionRouter } from "./api/OrganizacionRouter";
 import { PostulacionRouter } from "./api/PostulacionRouter";
 import { RecomendacionRouter } from "./api/RecomendacionRouter";
+import { FavoritoRouter } from "./api/FavoritosRouter";
+import { FeedbackRouter } from "./api/FeedbackRouter";
+import { OportunidadRouter } from "./api/OportunidadRouter";
+import { HabilidadRouter } from "./api/HabilidadRouter";
+import { HistorialRouter } from "./api/HistorialRouter";
+import { NotificacionRouter } from "./api/NotificacionRouter";
 import * as dotev from "dotenv";
-import { testConexion } from "./data/Conexion";
+import { testConexion } from "./db/Conexion";
 
 dotev.config();
 
@@ -23,7 +29,13 @@ const server = http.createServer(async (req, res) => {
         await PerfilRouter(req, res) ||
         await OrganizacionRouter(req, res) ||
         await PostulacionRouter(req, res) ||
-        await RecomendacionRouter(req, res);
+        await RecomendacionRouter(req, res) ||
+        await FavoritoRouter(req, res) ||
+        await FeedbackRouter(req, res) ||
+        await OportunidadRouter(req, res) ||
+        await HabilidadRouter(req, res) ||
+        await HistorialRouter(req, res) ||
+        await NotificacionRouter(req, res);
 
     if (!handled) {
         res.writeHead(404, {
