@@ -1,7 +1,10 @@
 import { Perfil } from "../models/Perfil";
 import { isEmptyString, isInvalidNumber, isInvalidDate } from "./validatorHelpers";
+import { BaseRepository } from "../repository/BaseRepository";
 
-export function PerfilValidate(perfil: Perfil) {
+const baseRepo = new BaseRepository();
+
+export async function PerfilValidate(perfil: Perfil) {
     const errores: string[] = [];
 
     if (perfil.foto === null || perfil.foto === undefined) {
@@ -30,6 +33,8 @@ export function PerfilValidate(perfil: Perfil) {
     }
     if (isInvalidNumber(perfil.id_usuario)) {
         errores.push("id_usuario vacio o invalido");
+    } else if (!(await baseRepo.existe("usuario", "id_usuario", perfil.id_usuario))) {
+        errores.push("id_usuario no existe");
     }
 
     return errores;

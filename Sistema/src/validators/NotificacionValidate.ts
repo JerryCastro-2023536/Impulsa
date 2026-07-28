@@ -1,7 +1,10 @@
 import { Notificacion } from "../models/Notificacion";
 import { isEmptyString, isInvalidNumber, isInvalidDate } from "./validatorHelpers";
+import { BaseRepository } from "../repository/BaseRepository";
 
-export function NotificacionValidate(notificacion: Notificacion) {
+const baseRepo = new BaseRepository();
+
+export async function NotificacionValidate(notificacion: Notificacion) {
     const errores: string[] = [];
 
     if (isEmptyString(notificacion.titulo)) {
@@ -18,9 +21,13 @@ export function NotificacionValidate(notificacion: Notificacion) {
     }
     if (isInvalidNumber(notificacion.id_perfil)) {
         errores.push("id_perfil vacio o invalido");
+    } else if (!(await baseRepo.existe("perfil", "id_perfil", notificacion.id_perfil))) {
+        errores.push("id_perfil no existe");
     }
     if (isInvalidNumber(notificacion.id_organizacion)) {
         errores.push("id_organizacion vacio o invalido");
+    } else if (!(await baseRepo.existe("organizacion", "id_organizacion", notificacion.id_organizacion))) {
+        errores.push("id_organizacion no existe");
     }
 
     return errores;

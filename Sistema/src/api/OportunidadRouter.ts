@@ -19,7 +19,7 @@ export async function OportunidadRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const oportunidad = JSON.parse(body);
-                const errores = OportunidadValidate(oportunidad);
+                const errores = await OportunidadValidate(oportunidad);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function OportunidadRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const oportunidad = JSON.parse(body);
-                const errores = OportunidadValidate(oportunidad);
+                const errores = await OportunidadValidate(oportunidad);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

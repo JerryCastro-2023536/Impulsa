@@ -19,7 +19,7 @@ export async function FeedbackRouter(req: IncomingMessage, res: ServerResponse):
             try {
                 const body = await ReadBody(req);
                 const feedback = JSON.parse(body);
-                const errores = FeedbackValidate(feedback);
+                const errores = await FeedbackValidate(feedback);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function FeedbackRouter(req: IncomingMessage, res: ServerResponse):
             try {
                 const body = await ReadBody(req);
                 const feedback = JSON.parse(body);
-                const errores = FeedbackValidate(feedback);
+                const errores = await FeedbackValidate(feedback);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

@@ -19,7 +19,7 @@ export async function HabilidadRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const habilidad = JSON.parse(body);
-                const errores = HabilidadValidate(habilidad);
+                const errores = await HabilidadValidate(habilidad);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function HabilidadRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const habilidad = JSON.parse(body);
-                const errores = HabilidadValidate(habilidad);
+                const errores = await HabilidadValidate(habilidad);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

@@ -19,7 +19,7 @@ export async function PerfilRouter(req: IncomingMessage, res: ServerResponse): P
             try {
                 const body = await ReadBody(req);
                 const perfil = JSON.parse(body);
-                const errores = PerfilValidate(perfil);
+                const errores = await PerfilValidate(perfil);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function PerfilRouter(req: IncomingMessage, res: ServerResponse): P
             try {
                 const body = await ReadBody(req);
                 const perfil = JSON.parse(body);
-                const errores = PerfilValidate(perfil);
+                const errores = await PerfilValidate(perfil);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

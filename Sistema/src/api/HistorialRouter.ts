@@ -19,7 +19,7 @@ export async function HistorialRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const historial = JSON.parse(body);
-                const errores = HistorialValidate(historial);
+                const errores = await HistorialValidate(historial);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function HistorialRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const historial = JSON.parse(body);
-                const errores = HistorialValidate(historial);
+                const errores = await HistorialValidate(historial);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

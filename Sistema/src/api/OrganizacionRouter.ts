@@ -19,7 +19,7 @@ export async function OrganizacionRouter(req: IncomingMessage, res: ServerRespon
             try {
                 const body = await ReadBody(req);
                 const organizacion = JSON.parse(body);
-                const errores = OrganizacionValidate(organizacion);
+                const errores = await OrganizacionValidate(organizacion);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function OrganizacionRouter(req: IncomingMessage, res: ServerRespon
             try {
                 const body = await ReadBody(req);
                 const organizacion = JSON.parse(body);
-                const errores = OrganizacionValidate(organizacion);
+                const errores = await OrganizacionValidate(organizacion);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

@@ -1,8 +1,11 @@
 import { Postulacion } from "../models/Postulacion";
 import { Estado } from "../enums/Estado";
 import { isEmptyString, isInvalidNumber, isInvalidDate, isInvalidEnum } from "./validatorHelpers";
+import { BaseRepository } from "../repository/BaseRepository";
 
-export function PostulacionValidate(postulacion: Postulacion) {
+const baseRepo = new BaseRepository();
+
+export async function PostulacionValidate(postulacion: Postulacion) {
     const errores: string[] = [];
 
     if (isInvalidDate(postulacion.fecha_postulacion)) {
@@ -16,9 +19,13 @@ export function PostulacionValidate(postulacion: Postulacion) {
     }
     if (isInvalidNumber(postulacion.id_perfil)) {
         errores.push("id_perfil vacio o invalido");
+    } else if (!(await baseRepo.existe("perfil", "id_perfil", postulacion.id_perfil))) {
+        errores.push("id_perfil no existe");
     }
     if (isInvalidNumber(postulacion.id_oportunidad)) {
         errores.push("id_oportunidad vacio o invalido");
+    } else if (!(await baseRepo.existe("oportunidad", "id_oportunidad", postulacion.id_oportunidad))) {
+        errores.push("id_oportunidad no existe");
     }
 
     return errores;

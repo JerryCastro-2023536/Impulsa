@@ -19,7 +19,7 @@ export async function TituloRouter(req : IncomingMessage, res : ServerResponse) 
             try{
                 const body = await ReadBody(req);
                 const titulo = JSON.parse(body);
-                const errores = TituloValidate(titulo);
+                const errores = await TituloValidate(titulo);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function TituloRouter(req : IncomingMessage, res : ServerResponse) 
             try{
                 const body = await ReadBody(req);
                 const titulo = JSON.parse(body);
-                const errores = TituloValidate(titulo);
+                const errores = await TituloValidate(titulo);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

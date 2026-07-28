@@ -19,7 +19,7 @@ export async function PostulacionRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const postulacion = JSON.parse(body);
-                const errores = PostulacionValidate(postulacion);
+                const errores = await PostulacionValidate(postulacion);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function PostulacionRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const postulacion = JSON.parse(body);
-                const errores = PostulacionValidate(postulacion);
+                const errores = await PostulacionValidate(postulacion);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

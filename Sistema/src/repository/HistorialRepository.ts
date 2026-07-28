@@ -1,7 +1,8 @@
 import { pool } from "../db/Conexion";
 import { Historial } from "../models/Historial";
+import { BaseRepository } from "./BaseRepository";
 
-export class HistorialRepository{
+export class HistorialRepository extends BaseRepository {
     async selectHistorial(){
         const result = await pool.query(
             "SELECT * FROM historial ORDER BY id_historial"

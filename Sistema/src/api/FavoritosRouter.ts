@@ -18,7 +18,7 @@ export async function FavoritoRouter(req: IncomingMessage, res : ServerResponse)
         if(req.method === "POST"){
             const body = await ReadBody(req);
             const fav = JSON.parse(body);
-            const errores = FavoritosValidate(fav);
+            const errores = await FavoritosValidate(fav);
             if (errores.length > 0) {
                 return sendJson(res, 400, { errores }), true;
             }
@@ -40,7 +40,7 @@ export async function FavoritoRouter(req: IncomingMessage, res : ServerResponse)
             try{
                 const body = await ReadBody(req);
                 const fav = JSON.parse(body);
-                const errores = FavoritosValidate(fav);
+                const errores = await FavoritosValidate(fav);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

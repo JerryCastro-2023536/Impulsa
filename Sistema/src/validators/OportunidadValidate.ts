@@ -1,8 +1,11 @@
 import { Oportunidad } from "../models/Oportunidad";
 import { Estado } from "../enums/Estado";
 import { isEmptyString, isInvalidNumber, isInvalidDate, isInvalidEnum } from "./validatorHelpers";
+import { BaseRepository } from "../repository/BaseRepository";
 
-export function OportunidadValidate(oportunidad: Oportunidad) {
+const baseRepo = new BaseRepository();
+
+export async function OportunidadValidate(oportunidad: Oportunidad) {
     const errores: string[] = [];
 
     if (isEmptyString(oportunidad.titulo)) {
@@ -40,6 +43,8 @@ export function OportunidadValidate(oportunidad: Oportunidad) {
     }
     if (isInvalidNumber(oportunidad.id_organizacion)) {
         errores.push("id_organizacion vacio o invalido");
+    } else if (!(await baseRepo.existe("organizacion", "id_organizacion", oportunidad.id_organizacion))) {
+        errores.push("id_organizacion no existe");
     }
 
     return errores;

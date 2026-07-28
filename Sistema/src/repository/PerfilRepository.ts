@@ -1,7 +1,8 @@
 import { pool } from "../db/Conexion";
 import { Perfil } from "../models/Perfil";
+import { BaseRepository } from "./BaseRepository";
 
-export class PerfilRepository{
+export class PerfilRepository extends BaseRepository {
     async selectPerfil(){
         const result = await pool.query(
             "SELECT * FROM perfil ORDER BY id_perfil"

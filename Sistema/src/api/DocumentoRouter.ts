@@ -19,7 +19,7 @@ export async function DocumentoRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const documento = JSON.parse(body);
-                const errores = DocumentoValidate(documento);
+                const errores = await DocumentoValidate(documento);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function DocumentoRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const documento = JSON.parse(body);
-                const errores = DocumentoValidate(documento);
+                const errores = await DocumentoValidate(documento);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

@@ -1,7 +1,10 @@
 import { Titulo } from "../models/Titulo";
 import { isEmptyString, isInvalidNumber } from "./validatorHelpers";
+import { BaseRepository } from "../repository/BaseRepository";
 
-export function TituloValidate(titulo: Titulo) {
+const baseRepo = new BaseRepository();
+
+export async function TituloValidate(titulo: Titulo) {
     const errores: string[] = [];
 
     if (isEmptyString(titulo.titulo)) {
@@ -12,6 +15,8 @@ export function TituloValidate(titulo: Titulo) {
     }
     if (isInvalidNumber(titulo.id_perfil)) {
         errores.push("id_perfil vacio o invalido");
+    } else if (!(await baseRepo.existe("perfil", "id_perfil", titulo.id_perfil))) {
+        errores.push("id_perfil no existe");
     }
 
     return errores;

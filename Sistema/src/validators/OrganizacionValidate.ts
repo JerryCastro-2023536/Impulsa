@@ -2,8 +2,11 @@ import { Organizacion } from "../models/Organizacion";
 import { Estado } from "../enums/Estado";
 import { TipoOrganizacion } from "../enums/TipoOrganizacion";
 import { isEmptyString, isInvalidNumber, isInvalidDate, isInvalidEmail, isInvalidEnum } from "./validatorHelpers";
+import { BaseRepository } from "../repository/BaseRepository";
 
-export function OrganizacionValidate(organizacion: Organizacion) {
+const baseRepo = new BaseRepository();
+
+export async function OrganizacionValidate(organizacion: Organizacion) {
     const errores: string[] = [];
 
     if (isEmptyString(organizacion.nombre)) {
@@ -38,6 +41,8 @@ export function OrganizacionValidate(organizacion: Organizacion) {
     }
     if (isInvalidNumber(organizacion.id_usuario)) {
         errores.push("id_usuario vacio o invalido");
+    } else if (!(await baseRepo.existe("usuario", "id_usuario", organizacion.id_usuario))) {
+        errores.push("id_usuario no existe");
     }
 
     return errores;

@@ -1,7 +1,10 @@
 import { Feedback } from "../models/Feedback";
 import { isEmptyString, isInvalidDate, isInvalidNumber } from "./validatorHelpers";
+import { BaseRepository } from "../repository/BaseRepository";
 
-export function FeedbackValidate(feedback: Feedback) {
+const baseRepo = new BaseRepository();
+
+export async function FeedbackValidate(feedback: Feedback) {
     const errores: string[] = [];
 
     if (isEmptyString(feedback.mensaje)) {
@@ -15,6 +18,8 @@ export function FeedbackValidate(feedback: Feedback) {
     }
     if (isInvalidNumber(feedback.id_usuario)) {
         errores.push("id_usuario vacio o invalido");
+    } else if (!(await baseRepo.existe("usuario", "id_usuario", feedback.id_usuario))) {
+        errores.push("id_usuario no existe");
     }
 
     return errores;

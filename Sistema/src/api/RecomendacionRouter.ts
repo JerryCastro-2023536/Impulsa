@@ -20,7 +20,7 @@ export async function RecomendacionRouter(req: IncomingMessage, res: ServerRespo
             try {
                 const body = await ReadBody(req);
                 const recomendacion = JSON.parse(body);
-                const errores = RecomendacionValidate(recomendacion);
+                const errores = await RecomendacionValidate(recomendacion);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -43,7 +43,7 @@ export async function RecomendacionRouter(req: IncomingMessage, res: ServerRespo
             try {
                 const body = await ReadBody(req);
                 const recomendacion = JSON.parse(body);
-                const errores = RecomendacionValidate(recomendacion);
+                const errores = await RecomendacionValidate(recomendacion);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

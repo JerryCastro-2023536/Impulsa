@@ -19,7 +19,7 @@ export async function ExperienciaRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const experiencia = JSON.parse(body);
-                const errores = ExperienciaValidate(experiencia);
+                const errores = await ExperienciaValidate(experiencia);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }
@@ -42,7 +42,7 @@ export async function ExperienciaRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const experiencia = JSON.parse(body);
-                const errores = ExperienciaValidate(experiencia);
+                const errores = await ExperienciaValidate(experiencia);
                 if (errores.length > 0) {
                     return sendJson(res, 400, { errores }), true;
                 }

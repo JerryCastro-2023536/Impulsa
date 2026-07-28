@@ -1,7 +1,8 @@
 import { pool } from "../db/Conexion";
 import { Experiencia } from "../models/Experiencia";
+import { BaseRepository } from "./BaseRepository";
 
-export class ExperienciaRepository{
+export class ExperienciaRepository extends BaseRepository {
     async selectExperiencia(){
         const result = await pool.query(
             "SELECT * FROM experiencia ORDER BY id_experiencia"
