@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { PostulacionService } from "../service/PostulacionService";
 import { ReadBody } from "./readBody";
+import { PostulacionValidate } from "../validators/PostulacionValidate";
 
 export async function PostulacionRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function PostulacionRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const postulacion = JSON.parse(body);
+                const errores = PostulacionValidate(postulacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ps.agregarPostulacion(postulacion);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function PostulacionRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const postulacion = JSON.parse(body);
+                const errores = PostulacionValidate(postulacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ps.actualizarPostulacion(id, postulacion);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

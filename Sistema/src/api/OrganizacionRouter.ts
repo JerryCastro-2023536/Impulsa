@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { OrganizacionService } from "../service/OrganizacionService";
 import { ReadBody } from "./readBody";
+import { OrganizacionValidate } from "../validators/OrganizacionValidate";
 
 export async function OrganizacionRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function OrganizacionRouter(req: IncomingMessage, res: ServerRespon
             try {
                 const body = await ReadBody(req);
                 const organizacion = JSON.parse(body);
+                const errores = OrganizacionValidate(organizacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await os.agregarOrganizacion(organizacion);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function OrganizacionRouter(req: IncomingMessage, res: ServerRespon
             try {
                 const body = await ReadBody(req);
                 const organizacion = JSON.parse(body);
+                const errores = OrganizacionValidate(organizacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await os.actualizarOrganizacion(id, organizacion);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

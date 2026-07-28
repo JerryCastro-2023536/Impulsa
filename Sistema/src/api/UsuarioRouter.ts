@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { UsuarioService } from "../service/UsuarioService";
 import { ReadBody } from "./readBody";
+import { UsuarioValidate } from "../validators/UsuarioValidate";
 
 const us = new UsuarioService();
 
@@ -20,6 +21,10 @@ export async function UsuarioRouter(req : IncomingMessage, res : ServerResponse)
             try{
                 const body = await ReadBody(req);
                 const user = JSON.parse(body);
+                const errores = await UsuarioValidate(user);
+                if(errores.length > 0){
+                    return sendJson(res, 400, {errores}), true;
+                }
                 const resultado = await us.crearUsuario(user);
                 return sendJson(res, 201, resultado), true;
             }catch(error){

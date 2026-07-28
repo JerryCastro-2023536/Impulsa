@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { ExperienciaService } from "../service/ExperienciaService";
 import { ReadBody } from "./readBody";
+import { ExperienciaValidate } from "../validators/ExperienciaValidate";
 
 export async function ExperienciaRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function ExperienciaRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const experiencia = JSON.parse(body);
+                const errores = ExperienciaValidate(experiencia);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await es.agregarExperiencia(experiencia);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function ExperienciaRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const experiencia = JSON.parse(body);
+                const errores = ExperienciaValidate(experiencia);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await es.actualizarExperiencia(id, experiencia);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

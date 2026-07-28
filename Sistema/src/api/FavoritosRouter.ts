@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { FavoritosService } from "../service/FavoritosService";
 import { sendJson } from "./SendJson";
 import { ReadBody } from "./readBody";
+import { FavoritosValidate } from "../validators/FavoritosValidate";
 
 const fs = new FavoritosService();
 
@@ -17,6 +18,10 @@ export async function FavoritoRouter(req: IncomingMessage, res : ServerResponse)
         if(req.method === "POST"){
             const body = await ReadBody(req);
             const fav = JSON.parse(body);
+            const errores = FavoritosValidate(fav);
+            if (errores.length > 0) {
+                return sendJson(res, 400, { errores }), true;
+            }
             const resultado = await fs.agregarFavorito(fav);
             return sendJson(res, 201, resultado), true;
         }
@@ -35,6 +40,10 @@ export async function FavoritoRouter(req: IncomingMessage, res : ServerResponse)
             try{
                 const body = await ReadBody(req);
                 const fav = JSON.parse(body);
+                const errores = FavoritosValidate(fav);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await fs.actualizarFavorito(id, fav);
                 return sendJson(res, 200, resultado), true;
             }catch(error){

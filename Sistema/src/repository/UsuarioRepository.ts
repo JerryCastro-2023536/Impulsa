@@ -85,4 +85,32 @@ export class UsuarioRepository{
         return true;
     }
 
+    async existeUsername(username:string):Promise<boolean>{
+
+    const result = await pool.query(
+
+        "SELECT 1 FROM Usuario WHERE username = $1",
+
+        [username]
+
+    );
+
+    return result.rowCount! > 0;
+
+    }   
+
+    async existeCorreo(correo:string):Promise<boolean>{
+
+    const result = await pool.query(
+
+        "SELECT 1 FROM Usuario WHERE correo = $1",
+
+        [correo]
+
+    );
+
+    return result.rowCount! > 0;
+
+    }
+
 }

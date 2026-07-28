@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { HabilidadService } from "../service/HabilidadService";
 import { ReadBody } from "./readBody";
+import { HabilidadValidate } from "../validators/HabilidadValidate";
 
 export async function HabilidadRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function HabilidadRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const habilidad = JSON.parse(body);
+                const errores = HabilidadValidate(habilidad);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await hs.agregarHabilidad(habilidad);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function HabilidadRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const habilidad = JSON.parse(body);
+                const errores = HabilidadValidate(habilidad);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await hs.actualizarHabilidad(id, habilidad);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

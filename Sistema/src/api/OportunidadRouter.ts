@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { OportunidadService } from "../service/OportunidadService";
 import { ReadBody } from "./readBody";
+import { OportunidadValidate } from "../validators/OportunidadValidate";
 
 export async function OportunidadRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function OportunidadRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const oportunidad = JSON.parse(body);
+                const errores = OportunidadValidate(oportunidad);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await os.agregarOportunidad(oportunidad);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function OportunidadRouter(req: IncomingMessage, res: ServerRespons
             try {
                 const body = await ReadBody(req);
                 const oportunidad = JSON.parse(body);
+                const errores = OportunidadValidate(oportunidad);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await os.actualizarOportunidad(id, oportunidad);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

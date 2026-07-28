@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { PerfilService } from "../service/PerfilService";
 import { ReadBody } from "./readBody";
+import { PerfilValidate } from "../validators/PerfilValidate";
 
 export async function PerfilRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function PerfilRouter(req: IncomingMessage, res: ServerResponse): P
             try {
                 const body = await ReadBody(req);
                 const perfil = JSON.parse(body);
+                const errores = PerfilValidate(perfil);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ps.agregarPerfil(perfil);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function PerfilRouter(req: IncomingMessage, res: ServerResponse): P
             try {
                 const body = await ReadBody(req);
                 const perfil = JSON.parse(body);
+                const errores = PerfilValidate(perfil);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ps.actualizarPerfil(id, perfil);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

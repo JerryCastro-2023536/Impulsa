@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { TituloService } from "../service/TituloService";
 import { ReadBody } from "./readBody";
+import { TituloValidate } from "../validators/TituloValidate";
 
 export async function TituloRouter(req : IncomingMessage, res : ServerResponse) : Promise<boolean> {
     const url = req.url ?? "";
@@ -18,7 +19,11 @@ export async function TituloRouter(req : IncomingMessage, res : ServerResponse) 
             try{
                 const body = await ReadBody(req);
                 const titulo = JSON.parse(body);
-                const resultado = ms.agregarTitulo(titulo);
+                const errores = TituloValidate(titulo);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
+                const resultado = await ms.agregarTitulo(titulo);
                 return sendJson(res, 201, resultado), true;
             }catch(error){
                 return sendJson(res, 400, { error: error instanceof Error ? error.message : "JSON inválido o campos incompletos." }), true;
@@ -37,6 +42,10 @@ export async function TituloRouter(req : IncomingMessage, res : ServerResponse) 
             try{
                 const body = await ReadBody(req);
                 const titulo = JSON.parse(body);
+                const errores = TituloValidate(titulo);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ms.actualizarTitulo(id, titulo);
                 return sendJson(res, 200, resultado), true;
             }catch(error){

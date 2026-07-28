@@ -3,6 +3,7 @@ import { sendJson } from "./SendJson";
 import { RecomendacionService } from "../service/RecomendacionService";
 import { Recomendacion } from "../models/Recomendacion";
 import { ReadBody } from "./readBody";
+import { RecomendacionValidate } from "../validators/RecomendacionValidate";
 
 export async function RecomendacionRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -19,6 +20,10 @@ export async function RecomendacionRouter(req: IncomingMessage, res: ServerRespo
             try {
                 const body = await ReadBody(req);
                 const recomendacion = JSON.parse(body);
+                const errores = RecomendacionValidate(recomendacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await rs.agregarRecomendacion(recomendacion);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -38,6 +43,10 @@ export async function RecomendacionRouter(req: IncomingMessage, res: ServerRespo
             try {
                 const body = await ReadBody(req);
                 const recomendacion = JSON.parse(body);
+                const errores = RecomendacionValidate(recomendacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await rs.actualizarRecomendacion(id, recomendacion);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

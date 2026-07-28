@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { DocumentoService } from "../service/DocumentoService";
 import { ReadBody } from "./readBody";
+import { DocumentoValidate } from "../validators/DocumentoValidate";
 
 export async function DocumentoRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function DocumentoRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const documento = JSON.parse(body);
+                const errores = DocumentoValidate(documento);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ds.agregarDocumento(documento);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function DocumentoRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const documento = JSON.parse(body);
+                const errores = DocumentoValidate(documento);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ds.actualizarDocumento(id, documento);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

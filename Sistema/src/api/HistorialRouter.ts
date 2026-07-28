@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { HistorialService } from "../service/HistorialService";
 import { ReadBody } from "./readBody";
+import { HistorialValidate } from "../validators/HistorialValidate";
 
 export async function HistorialRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function HistorialRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const historial = JSON.parse(body);
+                const errores = HistorialValidate(historial);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await hs.agregarHistorial(historial);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function HistorialRouter(req: IncomingMessage, res: ServerResponse)
             try {
                 const body = await ReadBody(req);
                 const historial = JSON.parse(body);
+                const errores = HistorialValidate(historial);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await hs.actualizarHistorial(id, historial);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {

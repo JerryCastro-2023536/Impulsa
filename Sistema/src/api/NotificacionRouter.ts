@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { sendJson } from "./SendJson";
 import { NotificacionService } from "../service/NotificacionService";
 import { ReadBody } from "./readBody";
+import { NotificacionValidate } from "../validators/NotificacionValidate";
 
 export async function NotificacionRouter(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     const url = req.url ?? "";
@@ -18,6 +19,10 @@ export async function NotificacionRouter(req: IncomingMessage, res: ServerRespon
             try {
                 const body = await ReadBody(req);
                 const notificacion = JSON.parse(body);
+                const errores = NotificacionValidate(notificacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ns.agregarNotificacion(notificacion);
                 return sendJson(res, 201, resultado), true;
             } catch (error) {
@@ -37,6 +42,10 @@ export async function NotificacionRouter(req: IncomingMessage, res: ServerRespon
             try {
                 const body = await ReadBody(req);
                 const notificacion = JSON.parse(body);
+                const errores = NotificacionValidate(notificacion);
+                if (errores.length > 0) {
+                    return sendJson(res, 400, { errores }), true;
+                }
                 const resultado = await ns.actualizarNotificacion(id, notificacion);
                 return sendJson(res, 200, resultado), true;
             } catch (error) {
